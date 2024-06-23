@@ -4,14 +4,12 @@ const STATUS_OK = 200;
 
 export function dataLoad() {
   return fetch(`${DOMAIN}${API}`)
-    .then((res) => {
-      if (res.status !== STATUS_OK) {
-        throw Error(
-          `Неверный html-статус ответа: ${res.status}: ${res.statusText}`
-        );
-      }
-      return res.json();
-    })
+  .then(res => {
+    if (res.ok) {
+        return res.json();
+    }
+    return Promise.reject(`Ошибка ${res.status}`);
+})
     .then((res) => {
       if (!res.success) {
         throw Error("В json-ответе success !== true");
