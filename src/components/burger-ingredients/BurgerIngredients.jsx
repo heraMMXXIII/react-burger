@@ -36,9 +36,9 @@ function BurgerIngredients({ data }) {
               {types  [type]}
             </h2>
             <ul className={styles["group-content"]}>
-              {groups[type].map((item, index) => (
+              {groups[type].map((item, index, id) => (
                 <BurgerIngredient
-                  key={type + index}
+                  key={id}
                   item={item}
                   count={index === 0 ? 1 : 0}
                 />

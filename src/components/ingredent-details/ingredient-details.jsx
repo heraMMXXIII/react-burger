@@ -9,7 +9,7 @@ function IngredientDetails({ item, onClose }) {
       <img
         className={`${styles.image} mb-4`}
         src={item.image_large}
-        alt="Изображение ингридиента"
+        alt={item.name}
       />
       <p
         className={`${styles.name} text-center text text_type_main-medium mb-8`}

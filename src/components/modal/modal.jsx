@@ -6,22 +6,47 @@ import { CloseIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 import ModalOverlay from "./modal-overlay";
 
 function Modal({ caption, children, onClose }) {
-  const checkEsc = useCallback(
+  // const checkEsc = useCallback(
+  //   (e) => {
+  //     if (e.key === "Escape") {
+  //       onClose(e);
+  //     }
+  //   },
+  //   [onClose]
+  // );
+
+  useEffect(() => {
+    document.addEventListener(
+      "keydown",
+      (e) => {
+        if (e.key === "Escape") {
+          onClose(e);
+        }
+      },
+      [onClose],
+      false
+    );
+
+    return () => {
+      document.removeEventListener(
+        "keydown",
+        (e) => {
+          if (e.key === "Escape") {
+            onClose(e);
+          }
+        },
+        [onClose],
+        false
+      );
+    };
+  }, [
     (e) => {
       if (e.key === "Escape") {
         onClose(e);
       }
     },
-    [onClose]
-  );
-
-  useEffect(() => {
-    document.addEventListener("keydown", checkEsc, false);
-
-    return () => {
-      document.removeEventListener("keydown", checkEsc, false);
-    };
-  }, [checkEsc]);
+    [onClose],
+  ]);
 
   return ReactDOM.createPortal(
     <div className={styles.container}>
