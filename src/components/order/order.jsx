@@ -6,7 +6,7 @@ import OrderDetails from "./order-details";
 function Order({ number, onClose }) {
   return (
     <Modal onClose={onClose}>
-      <OrderDetails orderNumber={number}/>
+      <OrderDetails number={number}/>
     </Modal>
   );
 }
