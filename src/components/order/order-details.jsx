@@ -3,7 +3,7 @@ import img from "../../image/complete.png";
 
 import styles from "./order-details.module.css";
 
-function OrderDetails({ number }) {
+function OrderDetails({number}) {
   return (
     <>
       <p

@@ -7,7 +7,7 @@ import {
   Counter,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import IngredientDetails from "../ingredent-details/ingredient-details";
-
+import Modal from "../modal/modal";
 
 function BurgerIngredient({ item, count }) {
   const [show, setShow] = useState(false);
@@ -38,7 +38,11 @@ function BurgerIngredient({ item, count }) {
       {count && count > 0 ? (
         <Counter count={count} size="default" extraClass={styles.count} />
       ) : undefined}
-      {show && <IngredientDetails item={item} onClose={hideDialog} />}
+      {show && (
+        <Modal onClose={hideDialog}>
+          <IngredientDetails item={item} onClose={hideDialog} />
+        </Modal>
+      )}
     </li>
   );
 }

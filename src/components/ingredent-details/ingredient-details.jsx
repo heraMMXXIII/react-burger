@@ -5,7 +5,7 @@ import { ingredientsPropTypes } from "../../utils/propTypes";
 
 function IngredientDetails({ item, onClose }) {
   return (
-    <Modal caption="Детали ингридиента" onClose={onClose}>
+    <>
       <img
         className={`${styles.image} mb-4`}
         src={item.image_large}
@@ -50,7 +50,7 @@ function IngredientDetails({ item, onClose }) {
           </div>
         </div>
       </div>
-    </Modal>
+    </>
   );
 }
 

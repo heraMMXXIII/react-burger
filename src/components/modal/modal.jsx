@@ -15,38 +15,19 @@ function Modal({ caption, children, onClose }) {
   //   [onClose]
   // );
 
-  useEffect(() => {
-    document.addEventListener(
-      "keydown",
-      (e) => {
-        if (e.key === "Escape") {
-          onClose(e);
-        }
-      },
-      [onClose],
-      false
-    );
 
-    return () => {
-      document.removeEventListener(
-        "keydown",
-        (e) => {
-          if (e.key === "Escape") {
-            onClose(e);
-          }
-        },
-        [onClose],
-        false
-      );
-    };
-  }, [
-    (e) => {
-      if (e.key === "Escape") {
-        onClose(e);
+  useEffect(() => {
+    function closeByEscape(evt) {
+      if(evt.key === 'Escape') {
+        onClose(evt);
       }
-    },
-    [onClose],
-  ]);
+    } 
+      document.addEventListener('keydown', closeByEscape);
+      return () => {
+        document.removeEventListener('keydown', closeByEscape);
+      }
+
+  }, [onClose]) 
 
   return ReactDOM.createPortal(
     <div className={styles.container}>

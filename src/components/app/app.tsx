@@ -15,6 +15,7 @@ function App() {
     isError: false,
   });
 
+
   useEffect(() => {
     dataLoad()
       .then((data) => {
