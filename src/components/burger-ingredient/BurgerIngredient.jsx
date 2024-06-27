@@ -39,7 +39,7 @@ function BurgerIngredient({ item, count }) {
         <Counter count={count} size="default" extraClass={styles.count} />
       ) : undefined}
       {show && (
-        <Modal onClose={hideDialog}>
+        <Modal onClose={hideDialog} caption={'Детали ингредиента'}>
           <IngredientDetails item={item} onClose={hideDialog} />
         </Modal>
       )}

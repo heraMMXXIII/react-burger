@@ -35,6 +35,7 @@ function Modal({ caption, children, onClose }) {
         <div className={`${styles.header} ml-10 mt-10 mr-10`}>
           <div className={`${styles.caption} text text_type_main-large`}>
             {caption}
+            
           </div>
           <div className={styles["close-btn"]}>
             <CloseIcon type="primary" onClick={onClose} />
@@ -50,7 +51,7 @@ function Modal({ caption, children, onClose }) {
 
 Modal.propTypes = {
   caption: PropTypes.string,
-  children: PropTypes.arrayOf(PropTypes.element),
+  children: PropTypes.node,
   onClose: PropTypes.func.isRequired,
 };
 

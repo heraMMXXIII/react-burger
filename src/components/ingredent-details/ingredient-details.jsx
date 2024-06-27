@@ -56,7 +56,6 @@ function IngredientDetails({ item, onClose }) {
 
 IngredientDetails.propTypes = {
   item: ingredientsPropTypes.isRequired,
-  onClose: PropTypes.func.isRequired,
 };
 
 export default IngredientDetails;
