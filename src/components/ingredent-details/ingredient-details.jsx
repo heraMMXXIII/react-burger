@@ -1,7 +1,9 @@
 import PropTypes from "prop-types";
 import styles from "./ingredient-details.module.css";
 import Modal from "../modal/modal";
-import { ingredientsPropTypes } from "../../utils/propTypes";
+import { dataPropTypes } from "../../utils/propTypes";
+
+
 
 function IngredientDetails({ item, onClose }) {
   return (
@@ -55,7 +57,7 @@ function IngredientDetails({ item, onClose }) {
 }
 
 IngredientDetails.propTypes = {
-  item: ingredientsPropTypes.isRequired,
+  item: dataPropTypes.isRequired,
 };
 
 export default IngredientDetails;

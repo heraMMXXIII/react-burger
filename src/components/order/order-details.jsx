@@ -1,6 +1,5 @@
 import PropTypes from "prop-types";
 import img from "../../image/complete.png";
-
 import styles from "./order-details.module.css";
 
 function OrderDetails({number}) {
@@ -33,7 +32,6 @@ function OrderDetails({number}) {
 
 OrderDetails.propTypes = {
     number: PropTypes.string.isRequired,
-    onClose: PropTypes.func.isRequired,
   };
   
   export default OrderDetails;

@@ -7,16 +7,43 @@ import {
 import styles from "./burger-constructor-order.module.css";
 import Order from "../order/order";
 
+import { useMemo, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  CLEAR_ORDER,
+  createOrderAction,
+} from "../../services/actions/create-order";
+import { getIngredients, getOrder } from "../../services/selectors";
+import Modal from "../modal/modal";
 
-function BurgerConstructorOrder({ sum, number }) {
-  const [show, setShow] = useState(false);
+function BurgerConstructorOrder({ number }) {
+  const { bun, ingredients, sum } = useSelector(getIngredients);
+  const { orderNumber, orderLoading, orderHasErrors } = useSelector(getOrder);
+
+  useEffect(() => {
+    if (orderHasErrors) {
+      alert("Ошибка при создании заказа");
+    }
+  }, [orderHasErrors]);
+
+  const disabled = useMemo(() => {
+    let hasIngredient = (ingredients && ingredients.length > 0) || bun;
+    let hasOrder = orderNumber !== null || orderLoading;
+    return !hasIngredient || hasOrder;
+  }, [bun, ingredients, orderNumber, orderLoading]);
+
+  const dispatch = useDispatch();
 
   function showOrder() {
-    setShow(true);
+    const orderIngredients = [...ingredients];
+    if (bun) {
+      orderIngredients.push(bun, bun);
+    }
+    dispatch(createOrderAction(orderIngredients));
   }
 
   function hideOrder() {
-    setShow(false);
+    dispatch({ type: CLEAR_ORDER });
   }
 
   return (
@@ -25,17 +52,22 @@ function BurgerConstructorOrder({ sum, number }) {
       <div className={`${styles["total-icon"]} mr-10`}>
         <CurrencyIcon type="primary" />
       </div>
-      <Button htmlType="button" type="primary" onClick={showOrder}>
+      <Button
+        htmlType="button"
+        type="primary"
+        disabled={disabled}
+        onClick={showOrder}
+      >
         Оформить заказ
       </Button>
-      {show && <Order number={number} onClose={hideOrder} />}
+      {orderNumber && (
+        <Modal onClose={hideOrder}>
+          <Order number={orderNumber} />
+        </Modal>
+      )}
     </div>
   );
 }
 
-BurgerConstructorOrder.propTypes = {
-  sum: PropTypes.number.isRequired,
-  number: PropTypes.string.isRequired,
-};
-
 export default BurgerConstructorOrder;
+//fff

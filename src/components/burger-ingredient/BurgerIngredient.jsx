@@ -1,28 +1,36 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
-import { ingredientsPropTypes } from "../../utils/propTypes";
 import styles from "./burger-ingredient.module.css";
 import {
   CurrencyIcon,
   Counter,
 } from "@ya.praktikum/react-developer-burger-ui-components";
-import IngredientDetails from "../ingredent-details/ingredient-details";
-import Modal from "../modal/modal";
+
+import React from "react";
+import { useDispatch } from "react-redux";
+import { useDrag } from "react-dnd";
+import propTypes from "prop-types";
+import { dataPropTypes } from "../../utils/propTypes";
+import { SET_DISPLAYED_INGREDIENT } from "../../services/actions/ingredient-window";
 
 function BurgerIngredient({ item, count }) {
-  const [show, setShow] = useState(false);
+  const dispatch = useDispatch();
 
-  function showDialog() {
-    setShow(true);
+  function showDialogItem() {
+    dispatch({ type: SET_DISPLAYED_INGREDIENT, item: item });
   }
 
-  function hideDialog(e) {
-    setShow(false);
-    e.stopPropagation();
-  }
+  const [, dragRef] = useDrag({
+    type: item.type,
+    item: item,
+  });
 
   return (
-    <li className={`${styles.card} mt-6 mb-8 ml-3 mr-2`} onClick={showDialog}>
+    <li
+      className={`${styles.card} mt-6 mb-2 ml-3 mr-2`}
+      onClick={showDialogItem}
+      ref={dragRef}
+    >
       <img
         className={`${styles.image} ml-4 mr-4 mb-1`}
         src={item.image}
@@ -35,21 +43,16 @@ function BurgerIngredient({ item, count }) {
       <div className={`${styles.title} text text_type_main-default`}>
         {item.name}
       </div>
-      {count && count > 0 ? (
+      {count > 0 && (
         <Counter count={count} size="default" extraClass={styles.count} />
-      ) : undefined}
-      {show && (
-        <Modal onClose={hideDialog} caption={'Детали ингредиента'}>
-          <IngredientDetails item={item} onClose={hideDialog} />
-        </Modal>
       )}
     </li>
   );
 }
-
+  
 BurgerIngredient.propTypes = {
-  item: ingredientsPropTypes.isRequired,
-  count: PropTypes.number,
+  item: dataPropTypes.isRequired,
+  count: propTypes.number,
 };
 
-export default BurgerIngredient;
+export default React.memo(BurgerIngredient);

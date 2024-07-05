@@ -2,17 +2,46 @@ import { useMemo, useRef } from "react";
 import PropTypes from "prop-types";
 import styles from "./burger-ingredients.module.css";
 import { BUN, SAUCE, MAIN, types } from "../../utils/ingredient-types";
-import { ingredientsPropTypes } from "../../utils/propTypes";
+import { dataPropTypes } from "../../utils/propTypes";
 import BurgerTab from "../burger-tab/burger-tab";
 import BurgerIngredient from "../burger-ingredient/BurgerIngredient";
+import Modal from "../modal/modal";
 
-function BurgerIngredients({ data }) {
+import { useDispatch, useSelector } from 'react-redux';
+import { SET_DISPLAYED_INGREDIENT } from '../../services/actions/ingredient-window';
+import { SET_TAB } from '../../services/actions/tab-info';
+import { getData, getDisplayedIngredient, getIngredients, getTab } from '../../services/selectors';
+import IngredientDetails from "../ingredent-details/ingredient-details";
+
+
+function BurgerIngredients() {
+  const displayedIngredient = useSelector(getDisplayedIngredient);
+  const { data } = useSelector(getData);
+  const tab = useSelector(getTab);
+  const { bun, ingredients } = useSelector(getIngredients);
+
+  const countData = useMemo(() => {
+      const res = {};
+      if (bun) {
+          res[bun._id] = 2;
+      }
+      for (let item of ingredients) {
+          if (!(item._id in res)) {
+              res[item._id] = 0;
+          }
+          res[item._id]++;
+      }
+      return res;
+  }, [bun, ingredients]);
+
+  const dispatch = useDispatch();
+
   const groups = useMemo(() => {
-    let res = {};
-    res[BUN] = data.filter((i) => i.type === BUN);
-    res[SAUCE] = data.filter((i) => i.type === SAUCE);
-    res[MAIN] = data.filter((i) => i.type === MAIN);
-    return res;
+      let res = {};
+      res[BUN] = data.filter(i => i.type === BUN);
+      res[SAUCE] = data.filter(i => i.type === SAUCE);
+      res[MAIN] = data.filter(i => i.type === MAIN);
+      return res;
   }, [data]);
 
   const headers = {};
@@ -21,8 +50,30 @@ function BurgerIngredients({ data }) {
   headers[MAIN] = useRef(null);
 
   function tabChange(value) {
-    headers[value].current.scrollIntoView({ behavior: "smooth" });
+      headers[value].current.scrollIntoView({ behavior: "smooth" });
   }
+
+  function handleScroll(e) {
+      const pos = e.currentTarget.scrollTop;
+      const distance = [];
+      for (let h of Object.values(headers)) {
+          const hPos = h.current.offsetTop;
+          distance.push(Math.abs(pos - hPos));
+      }
+      const min = Math.min(...distance);
+      const minIndex = distance.indexOf(min);
+      const newTab = Object.keys(headers)[minIndex];
+
+      if (tab !== newTab) {
+          dispatch({ type: SET_TAB, tab: newTab });
+      }
+  }
+
+  function hideDialog(e) {
+      dispatch({ type: SET_DISPLAYED_INGREDIENT, item: null });
+      e.stopPropagation();
+  }
+
 
   return (
     <section className={styles.section}>
@@ -47,12 +98,15 @@ function BurgerIngredients({ data }) {
           </div>
         ))}
       </div>
+      {displayedIngredient && (
+        <Modal caption="Детали ингридиента" onClose={hideDialog}>
+          <IngredientDetails item={displayedIngredient} />
+        </Modal>
+      )}
     </section>
   );
 }
 
-BurgerIngredients.propTypes = {
-  data: PropTypes.arrayOf(ingredientsPropTypes.isRequired).isRequired,
-};
+
 
 export default BurgerIngredients;
