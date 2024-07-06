@@ -1,6 +1,8 @@
 function checkResponse(res) {
-
-    return res.json();
+    if (res.ok) {
+        return res.json();
+    }
+    return Promise.reject(`Ошибка ${res.status}`);
 }
 
 export function request(url, options) {

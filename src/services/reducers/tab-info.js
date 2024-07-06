@@ -13,3 +13,15 @@ export function tabInfoReducer(state = initialState, action) {
             return state;
     }
 }
+
+export const tabReducer = (state = initialState, action) => {
+    switch (action.type) {
+      case SET_TAB:
+        return {
+          ...state,
+          tab: action.tab,
+        };
+      default:
+        return state;
+    }
+  };

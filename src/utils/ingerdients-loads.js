@@ -1,4 +1,5 @@
-const DOMAIN = "https://norma.nomoreparties.space";
+import { DOMAIN } from "./api-constants";
+
 const API = "/api/ingredients";
 const STATUS_OK = 200;
 

@@ -31,7 +31,7 @@ function OrderDetails({number}) {
 }
 
 OrderDetails.propTypes = {
-    number: PropTypes.string.isRequired,
+   
   };
   
   export default OrderDetails;

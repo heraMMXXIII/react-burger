@@ -7,12 +7,16 @@ import BurgerTab from "../burger-tab/burger-tab";
 import BurgerIngredient from "../burger-ingredient/BurgerIngredient";
 import Modal from "../modal/modal";
 
-import { useDispatch, useSelector } from 'react-redux';
-import { SET_DISPLAYED_INGREDIENT } from '../../services/actions/ingredient-window';
-import { SET_TAB } from '../../services/actions/tab-info';
-import { getData, getDisplayedIngredient, getIngredients, getTab } from '../../services/selectors';
+import { useDispatch, useSelector } from "react-redux";
+import { SET_DISPLAYED_INGREDIENT } from "../../services/actions/ingredient-window";
+import { SET_TAB } from "../../services/actions/tab-info";
+import {
+  getData,
+  getDisplayedIngredient,
+  getIngredients,
+  getTab,
+} from "../../services/selectors";
 import IngredientDetails from "../ingredent-details/ingredient-details";
-
 
 function BurgerIngredients() {
   const displayedIngredient = useSelector(getDisplayedIngredient);
@@ -21,27 +25,27 @@ function BurgerIngredients() {
   const { bun, ingredients } = useSelector(getIngredients);
 
   const countData = useMemo(() => {
-      const res = {};
-      if (bun) {
-          res[bun._id] = 2;
+    const res = {};
+    if (bun) {
+      res[bun._id] = 2;
+    }
+    for (let item of ingredients) {
+      if (!(item._id in res)) {
+        res[item._id] = 0;
       }
-      for (let item of ingredients) {
-          if (!(item._id in res)) {
-              res[item._id] = 0;
-          }
-          res[item._id]++;
-      }
-      return res;
+      res[item._id]++;
+    }
+    return res;
   }, [bun, ingredients]);
 
   const dispatch = useDispatch();
 
   const groups = useMemo(() => {
-      let res = {};
-      res[BUN] = data.filter(i => i.type === BUN);
-      res[SAUCE] = data.filter(i => i.type === SAUCE);
-      res[MAIN] = data.filter(i => i.type === MAIN);
-      return res;
+    let res = {};
+    res[BUN] = data.filter((i) => i.type === BUN);
+    res[SAUCE] = data.filter((i) => i.type === SAUCE);
+    res[MAIN] = data.filter((i) => i.type === MAIN);
+    return res;
   }, [data]);
 
   const headers = {};
@@ -49,49 +53,52 @@ function BurgerIngredients() {
   headers[SAUCE] = useRef(null);
   headers[MAIN] = useRef(null);
 
+  const handleTabChange = (type) => {
+    console.log("Активная вкладка:", type);
+  };
+
   function tabChange(value) {
-      headers[value].current.scrollIntoView({ behavior: "smooth" });
+    headers[value].current.scrollIntoView({ behavior: "smooth" });
   }
 
   function handleScroll(e) {
-      const pos = e.currentTarget.scrollTop;
-      const distance = [];
-      for (let h of Object.values(headers)) {
-          const hPos = h.current.offsetTop;
-          distance.push(Math.abs(pos - hPos));
-      }
-      const min = Math.min(...distance);
-      const minIndex = distance.indexOf(min);
-      const newTab = Object.keys(headers)[minIndex];
+    const pos = e.currentTarget.scrollTop;
+    const distance = [];
+    for (let h of Object.values(headers)) {
+      const hPos = h.current.offsetTop;
+      distance.push(Math.abs(pos - hPos));
+    }
+    const min = Math.min(...distance);
+    const minIndex = distance.indexOf(min);
+    const newTab = Object.keys(headers)[minIndex];
 
-      if (tab !== newTab) {
-          dispatch({ type: SET_TAB, tab: newTab });
-      }
+    if (tab !== newTab) {
+      dispatch({ type: SET_TAB, tab: newTab });
+    }
   }
 
   function hideDialog(e) {
-      dispatch({ type: SET_DISPLAYED_INGREDIENT, item: null });
-      e.stopPropagation();
+    dispatch({ type: SET_DISPLAYED_INGREDIENT, item: null });
+    e.stopPropagation();
   }
-
 
   return (
     <section className={styles.section}>
       <h1 className="text text_type_main-large mt-10 mb-5">Соберите бургер</h1>
       <BurgerTab tabChange={tabChange} />
 
-      <div className={styles.list}>
+      <div className={styles.list} onScroll={handleScroll}>
         {[BUN, SAUCE, MAIN].map((type, typeIndex) => (
           <div key={typeIndex}>
             <h2 className="text text_type_main-medium mt-2" ref={headers[type]}>
               {types[type]}
             </h2>
             <ul className={styles["group-content"]}>
-              {groups[type].map((item, index, id) => (
+              {groups[type].map((item) => (
                 <BurgerIngredient
                   key={item._id}
                   item={item}
-                  count={index === 0 ? 1 : 0}
+                  count={countData[item._id]}
                 />
               ))}
             </ul>
@@ -106,7 +113,5 @@ function BurgerIngredients() {
     </section>
   );
 }
-
-
 
 export default BurgerIngredients;
