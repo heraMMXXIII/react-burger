@@ -89,7 +89,7 @@ function BurgerConstructor() {
           {ingredients && ingredients.length > 0 ? (
             ingredients.map((item, index) => (
               <BurgerConstructorIngredient
-                key={uuid()}
+                key={item.uniqueId}
                 item={item}
                 index={index}
                 onDelete={deleteIngredient}
