@@ -16,11 +16,11 @@ export function burgerConstructorReducer(state = initialState, action) {
   switch (action.type) {
     case SET_BUN:
       return { ...state, bun: action.item };
-    case ADD_INGREDIENT:
-      return {
-        ...state,
-        ingredients: [...state.ingredients, action.payload],
-      };
+      case ADD_INGREDIENT:
+        return {
+          ...state,
+          ingredients: [...state.ingredients, action.payload]
+        };
     case DELETE_INGREDIENT:
       return {
         ...state,

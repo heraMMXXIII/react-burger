@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
 import PropTypes from "prop-types";
 import styles from "./burger-constructor.module.css";
 import {
@@ -7,11 +7,8 @@ import {
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import { dataPropTypes } from "../../utils/propTypes";
 import BurgerConstructorOrder from "./burger-constructor-order";
-
-import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useDrop } from "react-dnd";
-import { v4 as uuid } from "uuid";
 import {
   SET_BUN,
   ADD_INGREDIENT,
@@ -21,6 +18,7 @@ import {
 import { getIngredients } from "../../services/selectors";
 import { BUN, SAUCE, MAIN } from "../../utils/ingredient-types";
 import BurgerConstructorIngredient from "../burger-constructor-ingredient/burger-constructor-ingredient";
+import { addIngredient } from "../../services/addIngredient";
 
 function BurgerConstructor() {
   const dispatch = useDispatch();
@@ -35,14 +33,7 @@ function BurgerConstructor() {
     dispatch({ type: SET_SUM, sum });
   }, [bun, ingredients, dispatch]);
 
-  const [, dropTargetBunUp] = useDrop({
-    accept: BUN,
-    drop(item) {
-      dispatch({ type: SET_BUN, item: item });
-    },
-  });
-
-  const [, dropTargetBunDown] = useDrop({
+  const [, dropTargetBun] = useDrop({
     accept: BUN,
     drop(item) {
       dispatch({ type: SET_BUN, item: item });
@@ -52,7 +43,7 @@ function BurgerConstructor() {
   const [, dropTargetIngredient] = useDrop({
     accept: [SAUCE, MAIN],
     drop(item) {
-      dispatch({ type: ADD_INGREDIENT, item: item });
+      dispatch(addIngredient(item));
     },
   });
 
@@ -60,36 +51,38 @@ function BurgerConstructor() {
     dispatch({ type: DELETE_INGREDIENT, index: index });
   }
 
+  const BunElement = ({ type, bun }) => (
+    <div ref={dropTargetBun}>
+      {bun ? (
+        <ConstructorElement
+          type={type}
+          isLocked={true}
+          text={`${bun.name} (${type === "top" ? "верх" : "низ"})`}
+          price={bun.price}
+          thumbnail={bun.image}
+          extraClass={`${styles.ingredient} ml-8`}
+        />
+      ) : (
+        <div
+          className={`${styles["empty-element"]} constructor-element constructor-element_pos_${type} ml-8`}
+        >
+          <div className={`${styles["empty-element-text"]} text text_type_main-default`}>
+            Перетащите булку
+          </div>
+        </div>
+      )}
+    </div>
+  );
+
   return (
     <section className={styles.section}>
       <div className={`${styles.burger} mt-25 ml-4`}>
-        <div ref={dropTargetBunUp}>
-          {bun ? (
-            <ConstructorElement
-              type="top"
-              isLocked={true}
-              text={`${bun.name} (верх)`}
-              price={bun.price}
-              thumbnail={bun.image}
-              extraClass={`${styles.ingredient} ml-8`}
-            />
-          ) : (
-            <div
-              className={`${styles["empty-element"]} constructor-element constructor-element_pos_top ml-8`}
-            >
-              <div
-                className={`${styles["empty-element-text"]} text text_type_main-default`}
-              >
-                Перетащите булку
-              </div>
-            </div>
-          )}
-        </div>
+        <BunElement type="top" bun={bun} />
         <ul className={`${styles.scroll} mt-4 mb-4`} ref={dropTargetIngredient}>
           {ingredients && ingredients.length > 0 ? (
             ingredients.map((item, index) => (
               <BurgerConstructorIngredient
-                key={item.uniqueId}
+                key={item.uniqueId || item._id} // Используем uniqueId или _id в качестве ключа
                 item={item}
                 index={index}
                 onDelete={deleteIngredient}
@@ -107,35 +100,12 @@ function BurgerConstructor() {
             </div>
           )}
         </ul>
-        <div ref={dropTargetBunDown}>
-          {bun ? (
-            <ConstructorElement
-              type="bottom"
-              isLocked={true}
-              text={`${bun.name} (низ)`}
-              price={bun.price}
-              thumbnail={bun.image}
-              extraClass={`${styles.ingredient} ml-8`}
-            />
-          ) : (
-            <div
-              className={`${styles["empty-element"]} constructor-element constructor-element_pos_bottom ml-8`}
-            >
-              <div
-                className={`${styles["empty-element-text"]} text text_type_main-default`}
-              >
-                Перетащите булку
-              </div>
-            </div>
-          )}
-        </div>
+        <BunElement type="bottom" bun={bun} />
       </div>
 
       <BurgerConstructorOrder />
     </section>
   );
 }
-
-
 
 export default BurgerConstructor;
