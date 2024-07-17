@@ -1,65 +1,111 @@
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
 import PropTypes from "prop-types";
 import styles from "./burger-constructor.module.css";
-import { BUN } from "../../utils/ingredient-types";
 import {
   ConstructorElement,
   DragIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
-import { ingredientsPropTypes } from "../../utils/propTypes";
+import { dataPropTypes } from "../../utils/propTypes";
 import BurgerConstructorOrder from "./burger-constructor-order";
+import { useDispatch, useSelector } from "react-redux";
+import { useDrop } from "react-dnd";
+import {
+  SET_BUN,
+  ADD_INGREDIENT,
+  SET_SUM,
+  DELETE_INGREDIENT,
+} from "../../services/actions/burger-constructor";
+import { getIngredients } from "../../services/selectors";
+import { BUN, SAUCE, MAIN } from "../../utils/ingredient-types";
+import BurgerConstructorIngredient from "../burger-constructor-ingredient/burger-constructor-ingredient";
+import { addIngredient } from "../../services/addIngredient";
 
-function BurgerConstructor({ data }) {
-  const list = useMemo(() => data.filter((item) => item.type !== BUN), [data]);
-  const bun = useMemo(() => data.find((item) => item.type === BUN), [data]);
-  const sum = useMemo(
-    () => bun.price * 2 + list.reduce((sum, item) => (sum += item.price), 0),
-    [list, bun]
+function BurgerConstructor() {
+  const dispatch = useDispatch();
+  const { bun, ingredients } = useSelector(getIngredients);
+
+  useEffect(() => {
+    let sum = 0;
+    if (bun) {
+      sum += bun.price * 2;
+    }
+    sum += ingredients.reduce((sum, item) => (sum += item.price), 0);
+    dispatch({ type: SET_SUM, sum });
+  }, [bun, ingredients, dispatch]);
+
+  const [, dropTargetBun] = useDrop({
+    accept: BUN,
+    drop(item) {
+      dispatch({ type: SET_BUN, item: item });
+    },
+  });
+
+  const [, dropTargetIngredient] = useDrop({
+    accept: [SAUCE, MAIN],
+    drop(item) {
+      dispatch(addIngredient(item));
+    },
+  });
+
+  function deleteIngredient(index) {
+    dispatch({ type: DELETE_INGREDIENT, index: index });
+  }
+
+  const BunElement = ({ type, bun }) => (
+    <div ref={dropTargetBun}>
+      {bun ? (
+        <ConstructorElement
+          type={type}
+          isLocked={true}
+          text={`${bun.name} (${type === "top" ? "верх" : "низ"})`}
+          price={bun.price}
+          thumbnail={bun.image}
+          extraClass={`${styles.ingredient} ml-8`}
+        />
+      ) : (
+        <div
+          className={`${styles["empty-element"]} constructor-element constructor-element_pos_${type} ml-8`}
+        >
+          <div className={`${styles["empty-element-text"]} text text_type_main-default`}>
+            Перетащите булку
+          </div>
+        </div>
+      )}
+    </div>
   );
 
   return (
     <section className={styles.section}>
       <div className={`${styles.burger} mt-25 ml-4`}>
-        <ConstructorElement
-          type="top"
-          isLocked={true}
-          text={`${bun.name} (верх)`}
-          price={bun.price}
-          thumbnail={bun.image}
-          extraClass={`${styles.ingredient} ml-8`}
-        />
-        <ul className={`${styles.scroll} mt-4 mb-4`}>
-          {list.map((item, index) => (
-            <li className={`${styles["list-item"]} mt-4`} key={index}>
-              <span className={styles.draggable}>
-                <DragIcon type="primary" />
-              </span>
-              <ConstructorElement
-                text={item.name}
-                price={item.price}
-                thumbnail={item.image}
-                extraClass={`${styles.ingredient} ml-2`}
+        <BunElement type="top" bun={bun} />
+        <ul className={`${styles.scroll} mt-4 mb-4`} ref={dropTargetIngredient}>
+          {ingredients && ingredients.length > 0 ? (
+            ingredients.map((item, index) => (
+              <BurgerConstructorIngredient
+                key={item.uniqueId || item._id} // Используем uniqueId или _id в качестве ключа
+                item={item}
+                index={index}
+                onDelete={deleteIngredient}
               />
-            </li>
-          ))}
+            ))
+          ) : (
+            <div
+              className={`${styles["empty-element"]} constructor-element ml-8`}
+            >
+              <div
+                className={`${styles["empty-element-text"]} text text_type_main-default`}
+              >
+                Перетащите ингридиенты
+              </div>
+            </div>
+          )}
         </ul>
-        <ConstructorElement
-          type="bottom"
-          isLocked={true}
-          text={`${bun.name} (низ)`}
-          price={bun.price}
-          thumbnail={bun.image}
-          extraClass={`${styles.ingredient} ml-8`}
-        />
+        <BunElement type="bottom" bun={bun} />
       </div>
 
-      <BurgerConstructorOrder sum={sum} number="034536" />
+      <BurgerConstructorOrder />
     </section>
   );
 }
-
-BurgerConstructor.propTypes = {
-  data: PropTypes.arrayOf(ingredientsPropTypes.isRequired).isRequired,
-};
 
 export default BurgerConstructor;

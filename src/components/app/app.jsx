@@ -1,57 +1,48 @@
 import { useEffect, useState } from "react";
 import styles from "./app.module.css";
-import { dataLoad } from "../../utils/ingerdients-loads";
+
 import BurgerConstructor from "../burger-constructor/burger-constructor";
 import BurgerIngredients from "../burger-ingredients/BurgerIngredients";
 import AppHeader from "../app-header/app-header";
+import { useSelector, useDispatch } from "react-redux";
+import { loadIngredientsAction } from "../../services/actions/load-ingredients";
+import { getData } from "../../services/selectors";
 
 const MESSAGE_LOADING = "Подождите, идет загрузка...";
 const MESSAGE_ERROR = "Возникла ошибка при получении данных";
 
 function App() {
-  const [state, setState] = useState({
-    data: null,
-    isLoading: true,
-    isError: false,
-  });
+  const { data, dataLoading, dataHasErrors } = useSelector(getData);
+    const dispatch = useDispatch();
 
-
-  useEffect(() => {
-    dataLoad()
-      .then((data) => {
-        setState({ data: data, isLoading: false, isError: false });
-      })
-      .catch((err) => {
-        console.log("ошибка получения данных", err);
-        setState({ data: null, isLoading: false, isError: true });
-      });
-  }, []);
+    useEffect(() => {
+        dispatch(loadIngredientsAction());
+    }, [dispatch]);
 
   return (
     <>
-      {state.isLoading || state.isError ? (
+      {(dataLoading || dataHasErrors) ? (
         <main className={styles.wait}>
           <p className="text text_type_main-large">
-            {state.isLoading
+            {dataLoading
               ? MESSAGE_LOADING
-              : state.isError
+              : dataHasErrors
               ? MESSAGE_ERROR
               : undefined}
           </p>
         </main>
-      ) : (
-        state.data && (
+      ) : data && data.length > 0 ? (
+       
           <>
             <AppHeader />
             <main className={styles.main}>
               <div className={styles.inner}>
-                <BurgerIngredients data={state.data} />
-                <BurgerConstructor data={state.data} />
+                <BurgerIngredients/>
+                <BurgerConstructor/>
               </div>
             </main>
-          </>
-        )
-      )}
+          </>):undefined}
+      
     </>
   );
 }
