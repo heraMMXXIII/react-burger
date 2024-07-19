@@ -1,4 +1,4 @@
-import Icon from "../icon/icon";
+import { URL_PROFILE, URL_ROOT, URL_LENTA } from "../../utils/routes";
 import styles from "./app-header.module.css";
 import {
   Logo,
@@ -6,6 +6,7 @@ import {
   ListIcon,
   ProfileIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
+import IconLink from "../icon-link/icon-link";
 
 function AppHeader() {
   return (
@@ -14,14 +15,14 @@ function AppHeader() {
         <nav className={styles.left}>
           <ul className={styles.list}>
             <li>
-              <Icon href="/" icon={BurgerIcon} isActive>
+              <IconLink href={URL_ROOT} icon={BurgerIcon}>
                 Конструктор
-              </Icon>
+              </IconLink>
             </li>
             <li>
-              <Icon href="/" icon={ListIcon}>
+              <IconLink href={URL_LENTA} icon={ListIcon}>
                 Лента заказов
-              </Icon>
+              </IconLink>
             </li>
           </ul>
         </nav>
@@ -31,9 +32,9 @@ function AppHeader() {
         </div>
 
         <div className={styles.right}>
-          <Icon href="/" icon={ProfileIcon}>
+          <IconLink href={URL_PROFILE} icon={ProfileIcon}>
             Личный кабинет
-          </Icon>
+          </IconLink>
         </div>
       </div>
     </header>
