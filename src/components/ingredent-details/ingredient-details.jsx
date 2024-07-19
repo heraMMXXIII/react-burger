@@ -2,11 +2,31 @@ import PropTypes from "prop-types";
 import styles from "./ingredient-details.module.css";
 import Modal from "../modal/modal";
 import { dataPropTypes } from "../../utils/propTypes";
-
-
+import { useMemo } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useParams } from "react-router";
+import { getData } from "../../services/selectors";
+import { MESSAGE_ERROR, MESSAGE_LOADING } from "../../utils/message";
+import { loadIngredientsAction } from "../../services/actions/load-ingredients";
 
 function IngredientDetails({ item, onClose }) {
-  return (
+  const dispatch = useDispatch();
+  const params = useParams();
+  const { data, dataLoading, dataHasErrors } = useSelector(getData);
+  let item1 = useMemo(() => {
+    if (item) {
+      return item;
+    } else if (params.id && data && data.length > 0) {
+      return data.find((i) => i._id === params.id);
+    }
+    return null;
+  }, [item, params.id, data]);
+
+  if (!item1 && !dataLoading && !dataHasErrors && params && params.id) {
+    dispatch(loadIngredientsAction());
+  }
+
+  return item1 ? (
     <>
       <img
         className={`${styles.image} mb-4`}
@@ -53,6 +73,14 @@ function IngredientDetails({ item, onClose }) {
         </div>
       </div>
     </>
+  ) : (
+    <p className="text text_type_main-medium">
+      {dataLoading
+        ? MESSAGE_LOADING
+        : dataHasErrors
+        ? MESSAGE_ERROR
+        : undefined}
+    </p>
   );
 }
 

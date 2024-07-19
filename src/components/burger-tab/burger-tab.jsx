@@ -10,38 +10,12 @@ import { useEffect, useRef } from "react";
 function BurgerTab({ tabChange }) {
   const tab = useSelector(getTab);
   const dispatch = useDispatch();
-  const sectionsRef = useRef({});
+
 
   const change = (type) => {
     dispatch({ type: SET_TAB, tab: type });
     tabChange(type);
   };
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            dispatch({ type: SET_TAB, tab: entry.target.dataset.type });
-            tabChange(entry.target.dataset.type);
-          }
-        });
-      },
-      { threshold: 0.5 }
-    );
-
-    const sections = document.querySelectorAll('.ingredient-section');
-    sections.forEach((section) => {
-      observer.observe(section);
-      sectionsRef.current[section.dataset.type] = section;
-    });
-
-    return () => {
-      Object.values(sectionsRef.current).forEach((section) => {
-        observer.unobserve(section);
-      });
-    };
-  }, [dispatch, tabChange]);
 
   return (
     <div className={`${styles.tabs} mb-2`}>

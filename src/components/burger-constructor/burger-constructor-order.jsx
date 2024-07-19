@@ -1,20 +1,17 @@
-import { useState } from "react";
+import { useCallback, useState, useMemo, useEffect } from "react";
 import PropTypes from "prop-types";
-import {
-  CurrencyIcon,
-  Button,
-} from "@ya.praktikum/react-developer-burger-ui-components";
+import { CurrencyIcon, Button } from "@ya.praktikum/react-developer-burger-ui-components";
 import styles from "./burger-constructor-order.module.css";
 import Order from "../order/order";
-
-import { useMemo, useEffect } from "react";
+import { URL_LOGIN } from "../../utils/routes";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  CLEAR_ORDER,
-  createOrderAction,
-} from "../../services/actions/create-order";
-import { getIngredients, getOrder } from "../../services/selectors";
+import { CLEAR_ORDER, createOrderAction } from "../../services/actions/create-order";
+import { getAuth, getIngredients, getOrder } from "../../services/selectors";
 import Modal from "../modal/modal";
+import Loader from "../loader/loader";
+import { useNavigate } from "react-router-dom";
+import { authGetUserAction } from "../../services/actions/auth";
+import OrderDetails from "../order-details/order-details";
 
 function BurgerConstructorOrder({ number }) {
   const { bun, ingredients, sum } = useSelector(getIngredients);
@@ -33,14 +30,31 @@ function BurgerConstructorOrder({ number }) {
   }, [bun, ingredients, orderNumber, orderLoading]);
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const auth = useSelector(getAuth) || {};
+  const { userLoggedIn, requestStart } = auth;
 
-  function showOrder() {
-    const orderIngredients = [...ingredients];
-    if (bun) {
-      orderIngredients.push(bun, bun);
+  useEffect(() => {
+    if (!userLoggedIn) {
+      dispatch(authGetUserAction());
     }
-    dispatch(createOrderAction(orderIngredients));
-  }
+  }, [userLoggedIn, dispatch]);
+
+  const showOrder = useCallback(() => {
+    if (requestStart) {
+      return;
+    }
+
+    if (!userLoggedIn) {
+      navigate(URL_LOGIN, { replace: true });
+    } else {
+      const orderIngredients = [...ingredients];
+      if (bun) {
+        orderIngredients.push(bun, bun);
+      }
+      dispatch(createOrderAction(orderIngredients));
+    }
+  }, [requestStart, userLoggedIn, navigate, ingredients, bun, dispatch]);
 
   function hideOrder() {
     dispatch({ type: CLEAR_ORDER });
@@ -48,26 +62,35 @@ function BurgerConstructorOrder({ number }) {
 
   return (
     <div className={`${styles.total} mr-4 mt-10`}>
-      <div className="text text_type_digits-medium mr-2 mb-1">{sum}</div>
-      <div className={`${styles["total-icon"]} mr-10`}>
-        <CurrencyIcon type="primary" />
-      </div>
-      <Button
-        htmlType="button"
-        type="primary"
-        disabled={disabled}
-        onClick={showOrder}
-      >
-        Оформить заказ
-      </Button>
+      {orderLoading ? (
+        <Loader />
+      ) : (
+        <>
+          <div className="text text_type_digits-medium mr-2 mb-1">{sum}</div>
+          <div className={`${styles["total-icon"]} mr-10`}>
+            <CurrencyIcon type="primary" />
+          </div>
+          <Button
+            htmlType="button"
+            type="primary"
+            disabled={disabled}
+            onClick={showOrder}
+          >
+            Оформить заказ
+          </Button>
+        </>
+      )}
       {orderNumber && (
         <Modal onClose={hideOrder}>
-          <Order number={orderNumber} />
+          <OrderDetails number={orderNumber} />
         </Modal>
       )}
     </div>
   );
 }
 
+BurgerConstructorOrder.propTypes = {
+  number: PropTypes.number,
+};
+
 export default BurgerConstructorOrder;
-//fff

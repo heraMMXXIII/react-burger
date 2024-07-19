@@ -27,7 +27,9 @@ function AppHeader() {
         </nav>
 
         <div className={styles.center}>
+          <a href = "/">
           <Logo />
+          </a>
         </div>
 
         <div className={styles.right}>

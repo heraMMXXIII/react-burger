@@ -1,4 +1,4 @@
-import { DOMAIN } from "./api-constants";
+import { DOMAIN } from "./api";
 import { checkResponse } from "./requests";
 
 const API = "/api/ingredients";
@@ -6,7 +6,7 @@ const STATUS_OK = 200;
 
 export function dataLoad() {
   return fetch(`${DOMAIN}${API}`)
-  .then(checkResponse)
+    .then(checkResponse)
     .then((res) => {
       if (!res.success) {
         throw Error("В json-ответе success !== true");

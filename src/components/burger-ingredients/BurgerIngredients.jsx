@@ -1,10 +1,10 @@
-import { useMemo, useRef } from "react";
+import { useCallback, useMemo, useRef } from "react";
 import PropTypes from "prop-types";
 import styles from "./burger-ingredients.module.css";
 import { BUN, SAUCE, MAIN, types } from "../../utils/ingredient-types";
 import { dataPropTypes } from "../../utils/propTypes";
 import BurgerTab from "../burger-tab/burger-tab";
-import BurgerIngredient from "../burger-ingredient/BurgerIngredient";
+import BurgerIngredient from "../burger-ingredient/Burger-Ingredient";
 import Modal from "../modal/modal";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -17,6 +17,8 @@ import {
   getTab,
 } from "../../services/selectors";
 import IngredientDetails from "../ingredent-details/ingredient-details";
+import { useNavigate } from "react-router-dom";
+import { URL_ROOT } from "../../utils/routes";
 
 function BurgerIngredients() {
   const displayedIngredient = useSelector(getDisplayedIngredient);
@@ -39,6 +41,7 @@ function BurgerIngredients() {
   }, [bun, ingredients]);
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const groups = useMemo(() => {
     let res = {};
@@ -53,9 +56,6 @@ function BurgerIngredients() {
   headers[SAUCE] = useRef(null);
   headers[MAIN] = useRef(null);
 
-  const handleTabChange = (type) => {
-    console.log("Активная вкладка:", type);
-  };
 
   function tabChange(value) {
     headers[value].current.scrollIntoView({ behavior: "smooth" });
@@ -76,11 +76,12 @@ function BurgerIngredients() {
       dispatch({ type: SET_TAB, tab: newTab });
     }
   }
-
-  function hideDialog(e) {
+  const hideDialog = useCallback((e) => {
+    navigate(URL_ROOT, { replace: true });
     dispatch({ type: SET_DISPLAYED_INGREDIENT, item: null });
     e.stopPropagation();
-  }
+}, [dispatch, navigate]);
+
 
   return (
     <section className={styles.section}>

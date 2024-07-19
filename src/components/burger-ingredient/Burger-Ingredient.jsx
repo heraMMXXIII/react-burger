@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import PropTypes from "prop-types";
 import styles from "./burger-ingredient.module.css";
 import {
@@ -12,13 +12,18 @@ import { useDrag } from "react-dnd";
 import propTypes from "prop-types";
 import { dataPropTypes } from "../../utils/propTypes";
 import { SET_DISPLAYED_INGREDIENT } from "../../services/actions/ingredient-window";
+import { useLocation, useNavigate } from 'react-router-dom';
+import { URL_INGREDIENTS } from "../../utils/routes";
 
 function BurgerIngredient({ item, count }) {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  function showDialogItem() {
-    dispatch({ type: SET_DISPLAYED_INGREDIENT, item: item });
-  }
+  const showDialogItem = useCallback(() => {
+    navigate(`${URL_INGREDIENTS}/${item._id}`, { replace: true, state: { location: location, item: item } });
+    dispatch({type: SET_DISPLAYED_INGREDIENT, item: item});
+}, [dispatch, navigate, location, item]);
 
   const [, dragRef] = useDrag({
     type: item.type,
@@ -49,7 +54,7 @@ function BurgerIngredient({ item, count }) {
     </li>
   );
 }
-  
+
 BurgerIngredient.propTypes = {
   item: dataPropTypes.isRequired,
   count: propTypes.number,
