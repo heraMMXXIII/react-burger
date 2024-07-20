@@ -21,10 +21,6 @@ function IngredientDetails({ item }) {
     return null;
   }, [item, params.id, data]);
 
-  if (!item1 && !dataLoading && !dataHasErrors && params && params.id) {
-    dispatch(loadIngredientsAction());
-  }
-
   return item1 ? (
     <>
       <img

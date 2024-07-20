@@ -13,9 +13,6 @@ function MainPage() {
   const { data, dataLoading, dataHasErrors } = useSelector(getData);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch(loadIngredientsAction());
-  }, [dispatch]);
 
   return dataLoading || dataHasErrors ? (
     <main className={styles["wait-container"]}>
