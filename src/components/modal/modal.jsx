@@ -3,39 +3,32 @@ import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 import styles from "./modal.module.css";
 import { CloseIcon } from "@ya.praktikum/react-developer-burger-ui-components";
-import ModalOverlay from "./modal-overlay";
+import ModalOverlay from "../modal-overlay/modal-overlay";
 
 function Modal({ caption, children, onClose }) {
-  // const checkEsc = useCallback(
-  //   (e) => {
-  //     if (e.key === "Escape") {
-  //       onClose(e);
-  //     }
-  //   },
-  //   [onClose]
-  // );
-
+  const checkEsc = useCallback(
+    (e) => {
+      if (e.key === "Escape") {
+        onClose(e);
+      }
+    },
+    [onClose]
+  );
 
   useEffect(() => {
-    function closeByEscape(evt) {
-      if(evt.key === 'Escape') {
-        onClose(evt);
-      }
-    } 
-      document.addEventListener('keydown', closeByEscape);
-      return () => {
-        document.removeEventListener('keydown', closeByEscape);
-      }
+    document.addEventListener("keydown", checkEsc, false);
 
-  }, [onClose]) 
+    return () => {
+      document.removeEventListener("keydown", checkEsc, false);
+    };
+  }, [checkEsc]);
 
-  return ReactDOM.createPortal((
+  return ReactDOM.createPortal(
     <div className={styles.container}>
       <div className={styles.dialog}>
         <div className={`${styles.header} ml-10 mt-10 mr-10`}>
           <div className={`${styles.caption} text text_type_main-large`}>
             {caption}
-            
           </div>
           <div className={styles["close-btn"]}>
             <CloseIcon type="primary" onClick={onClose} />
@@ -44,14 +37,14 @@ function Modal({ caption, children, onClose }) {
         <div className={styles.content}>{children}</div>
       </div>
       <ModalOverlay onClose={onClose} />
-    </div>
-    ), document.getElementById("modal")
+    </div>,
+    document.getElementById("modal")
   );
 }
 
 Modal.propTypes = {
   caption: PropTypes.string,
-  children: PropTypes.node,
+  children: PropTypes.element.isRequired,
   onClose: PropTypes.func.isRequired,
 };
 
