@@ -1,46 +1,72 @@
-# Getting Started with Create React App
+# Космическая бургерная
+![img](logo.svg)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+Учебный проект на курсе [react-разработчик](https://practicum.yandex.ru/react/) от yandex. Сделан по [макету](https://www.figma.com/file/zFGN2O5xktHl9VmoOieq5E/React-_-Проектные-задачи_external_link?node-id=0%3A1&t=L1Qw4Ncywvdufa0e-0).
+```
+git clone https://github.com/miptleha/react-burger.git
+cd react-burger
+npm ci
+npm start
+```
 
-In the project directory, you can run:
+На протяжении 3-х месяцев для закрепления полученных сведений о возможностях React проект делался по спринтам (каждый по 2 недели).
 
-### `npm start`
+## Спринт 5
+Перевод оставшихся js-файлов в ts-файлы.   
+Верстка и загрузка через WebSocket списка заказов (лента и история), сделать окно с информацией о заказе.
+```
+git checkout sprint-5/step-1
+```
+[Замечания](https://github.com/miptleha/react-burger/pull/12) по спринту.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Спринт 4
+Перевод проекта на Typescript за исключением хранилища. Файлы jsx/js заменены на tsx/ts.
+```
+git checkout sprint-4/step-1
+```
+[Замечания](https://github.com/miptleha/react-burger/pull/10) по доработкам.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Спринт 3
+Сделать странички логина, регистрации, восстановления пароля, профиля.   
+Авторизация пользователя (для некоторых операций и страниц требуется вход в систему).
+```
+git checkout sprint-3/step-1
+```
+[Замечания](https://github.com/miptleha/react-burger/pull/9) от ревьювера.
 
-### `npm test`
+## Спринт 2
+### Шаг 1
+Данные перенесены в Context. Заказ отправляется на сервер.
+```
+git checkout sprint-2/step-1
+```
+[Замечания](https://github.com/miptleha/react-burger/pull/6) по изменениям в ветке
+### Шаг 2
+Данные перенесены в redux (redux-toolkit?). Перетаскивание, удаление и сортировка ингредиентов.
+```
+git checkout sprint-2/step-2
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Спринт 1
+### Шаг 1
+Создали папку [src/components](src/components/), поместили туда app.js и 3 компонента: AppHeader, BurgerContructor и BurgerIngredients.   
+Данные с бургерами поместили в файл [src/utils/data.js](src/utils/data.js).  
+Делаем начальную верстку главной страницы приложения.
+```
+git checkout sprint-1/step-1
+```
+Обсуждение [замечаний](https://github.com/miptleha/react-burger/pull/1) от ревьювера.   
+Замечания были исправлены, было предложено продолжить оставшуюся верстку в ветке sprint-1/step-2
+### Шаг 2
+Добавить 2 модальных окна: детали ингридиента и "Оформить заказ".   
+Сделать в соответствии с чек-листом к спринту
+```
+git checkout sprint-1/step-2
+```
+Были [замечания](https://github.com/miptleha/react-burger/pull/4) по загрузке данных с сервера, успешно их исправил, работу приняли и я смержил все в main ветку.
 
-### `npm run build`
+## Начальный коммит
+Стартовый коммит проекта с помощью [CRA](https://create-react-app.dev/docs/getting-started) с добавленными UI компонентами от [Яндекс](https://github.com/Yandex-Practicum/react-developer-burger-ui-components).   
+Кода пока никакого не написано, это начальный коммит.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).

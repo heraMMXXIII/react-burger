@@ -1,7 +1,91 @@
 :root {
-  --width-outer: 1280px;
+    --width-outer: 1280px;
 }
 
 .text-center {
-  text-align: center;
+    text-align: center;
 }
+
+.page-container {
+    display: flex;
+    justify-content: center;
+    height: calc(100% - 100px);
+    overflow-y: hidden;
+}
+
+@media (max-height: 800px) {
+    .page-container {
+        height: 100%;
+    }
+}
+
+.page-container-inner {
+    text-align: center;
+}
+
+.page-container-profile {
+    justify-content: flex-start;
+}
+
+.page-container-profile-wrapper {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.page-container-profile-sidebar {
+    width: 320px;
+}
+
+.page-container-profile-sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.page-container-profile-sidebar a {
+    text-decoration: none;
+    line-height: 64px;
+}
+
+.page-link {
+    color: #4C4CFF;
+    text-decoration: none;
+}
+
+.page-link:hover {
+    text-decoration: underline;
+}
+
+.text_color_dark {
+    color: #404052;
+}
+
+.error-text {
+    color: var(--colors-interface-error);
+    max-width: 500px;
+}
+
+.feed_orders {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 16px;
+    max-height: calc(100vh - 110px);
+    overflow: auto;
+    padding-right: 8px;
+    width: 580px;
+    scrollbar-color: #8585AD #2F2F37;
+    scrollbar-width: thin;
+  }
+  
+  .feed .feed_orders {
+    max-height: calc(100vh - 250px);
+  }
+  
+  .feed_orders::-webkit-scrollbar {
+    background-color: #2F2F37;
+    width: 8px;
+  }
+  
+  .feed_orders::-webkit-scrollbar-thumb {
+    background-color: #8585AD;
+  }
