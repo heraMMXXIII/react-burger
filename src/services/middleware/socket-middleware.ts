@@ -4,7 +4,6 @@ import { getCookie } from '../../utils/cookie';
 import { getEventMessage } from '../../utils/message';
 
 import type { AppDispatch, RootState, wsActionsTypes } from '../../utils/types';
-
 export const socketMiddleware = (wsActions: wsActionsTypes): Middleware => {
   return (store: MiddlewareAPI<AppDispatch, RootState>) => {
     let socket: WebSocket | null = null;
@@ -20,22 +19,28 @@ export const socketMiddleware = (wsActions: wsActionsTypes): Middleware => {
         if (action.addToken) {
           url += `?token=${getCookie('accessToken')}`;
         }
-        
-        let cnt = 0;
-        //проблемы с Firefox, иногда не может соединиться
-        while (cnt < 10) {
+
+        let attempt = 0;
+        const maxAttempts = 10;
+        const connectSocket = () => {
           try {
             socket = new WebSocket(url);
-            break;
-          } catch {
-            cnt++;
+            isWsConnected = true;
+            window.clearTimeout(timerWsReconnect);
+            dispatch({ type: wsActions.onSuccess });
+          } catch (error) {
+            attempt++;
+            if (attempt < maxAttempts) {
+              setTimeout(connectSocket, 1000);
+            } else {
+              dispatch({ type: wsActions.onError, error: 'Не удалось установить соединение после нескольких попыток' });
+            }
           }
-        }
-        
-        isWsConnected = true;
-        window.clearTimeout(timerWsReconnect);
-        dispatch({ type: wsActions.onSuccess });
+        };
+
+        connectSocket();
       }
+
       if (socket) {
         socket.onopen = () => {
           dispatch({ type: wsActions.onOpen });
@@ -44,14 +49,14 @@ export const socketMiddleware = (wsActions: wsActionsTypes): Middleware => {
         socket.onclose = event => {
           if (event.code !== 1000) {
             dispatch({ type: wsActions.onError, error: getEventMessage(event) });
-            socket?.close();
           }
           if (isWsConnected) {
             dispatch({ type: wsActions.onClosed });
             timerWsReconnect = window.setTimeout(() => {
               dispatch({ type: wsActions.onStart, url: url });
-            }, 3000)
+            }, 3000);
           }
+          socket = null;
         };
 
         socket.onmessage = event => {
@@ -76,10 +81,12 @@ export const socketMiddleware = (wsActions: wsActionsTypes): Middleware => {
           window.clearTimeout(timerWsReconnect);
           isWsConnected = false;
           timerWsReconnect = 0;
-          socket.close();
+          socket?.close();
           dispatch({ type: wsActions.onClosed });
+          socket = null; 
         }
       }
+
       next(action);
     };
   };
