@@ -23,7 +23,7 @@
 }
 .loader:before,
 .loader:after {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
 }
@@ -55,4 +55,3 @@
     box-shadow: 0 2.5em 0 0;
   }
 }
-

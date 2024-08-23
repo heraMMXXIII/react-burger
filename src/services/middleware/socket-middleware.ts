@@ -1,23 +1,23 @@
-import type { AnyAction, Middleware, MiddlewareAPI } from 'redux';
-import { refreshToken } from '../../utils/api';
-import { getCookie } from '../../utils/cookie';
-import { getEventMessage } from '../../utils/message';
+import type { AnyAction, Middleware, MiddlewareAPI } from "redux";
+import { refreshToken } from "../../utils/api";
+import { getCookie } from "../../utils/cookie";
+import { getEventMessage } from "../../utils/message";
 
-import type { AppDispatch, RootState, wsActionsTypes } from '../../utils/types';
+import type { AppDispatch, RootState, wsActionsTypes } from "../../utils/types";
 export const socketMiddleware = (wsActions: wsActionsTypes): Middleware => {
   return (store: MiddlewareAPI<AppDispatch, RootState>) => {
     let socket: WebSocket | null = null;
     let timerWsReconnect = 0;
     let isWsConnected = false;
-    let url = '';
+    let url = "";
 
-    return next => (action: AnyAction) => {
+    return (next) => (action: AnyAction) => {
       const { dispatch } = store;
 
       if (action.type === wsActions.onStart) {
         url = action.url;
         if (action.addToken) {
-          url += `?token=${getCookie('accessToken')}`;
+          url += `?token=${getCookie("accessToken")}`;
         }
 
         let attempt = 0;
@@ -33,7 +33,11 @@ export const socketMiddleware = (wsActions: wsActionsTypes): Middleware => {
             if (attempt < maxAttempts) {
               setTimeout(connectSocket, 1000);
             } else {
-              dispatch({ type: wsActions.onError, error: 'Не удалось установить соединение после нескольких попыток' });
+              dispatch({
+                type: wsActions.onError,
+                error:
+                  "Не удалось установить соединение после нескольких попыток",
+              });
             }
           }
         };
@@ -46,9 +50,12 @@ export const socketMiddleware = (wsActions: wsActionsTypes): Middleware => {
           dispatch({ type: wsActions.onOpen });
         };
 
-        socket.onclose = event => {
+        socket.onclose = (event) => {
           if (event.code !== 1000) {
-            dispatch({ type: wsActions.onError, error: getEventMessage(event) });
+            dispatch({
+              type: wsActions.onError,
+              error: getEventMessage(event),
+            });
           }
           if (isWsConnected) {
             dispatch({ type: wsActions.onClosed });
@@ -59,11 +66,11 @@ export const socketMiddleware = (wsActions: wsActionsTypes): Middleware => {
           socket = null;
         };
 
-        socket.onmessage = event => {
+        socket.onmessage = (event) => {
           const { data } = event;
           const parsedData = JSON.parse(data);
           if (!parsedData?.success) {
-            if (parsedData?.message === 'Invalid or missing token') {
+            if (parsedData?.message === "Invalid or missing token") {
               refreshToken();
             }
             dispatch({ type: wsActions.onError, error: parsedData?.message });
@@ -73,7 +80,7 @@ export const socketMiddleware = (wsActions: wsActionsTypes): Middleware => {
           }
         };
 
-        socket.onerror = event => {
+        socket.onerror = (event) => {
           dispatch({ type: wsActions.onError, error: getEventMessage(event) });
         };
 
@@ -83,7 +90,7 @@ export const socketMiddleware = (wsActions: wsActionsTypes): Middleware => {
           timerWsReconnect = 0;
           socket?.close();
           dispatch({ type: wsActions.onClosed });
-          socket = null; 
+          socket = null;
         }
       }
 
