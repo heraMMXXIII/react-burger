@@ -21,6 +21,7 @@ const API_TOKEN = "auth/token";
 const API_USER = "auth/user";
 const API_FORGOT_PASSWORD = "password-reset";
 const API_RESET_PASSWORD = "password-reset/reset";
+export const TEST_URL = "http://localhost:3000";
 
 function request(endpoint: string, options?: RequestInit) {
   return fetch(`${BASE_URL}${endpoint}`, options).then(checkResponse);
