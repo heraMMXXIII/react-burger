@@ -1,7 +1,5 @@
 import React, { useCallback, FC, SyntheticEvent } from "react";
-import { useDispatch } from "../../hooks/redux";
 import { useDrag } from "react-dnd";
-import { SET_DISPLAYED_INGREDIENT } from "../../services/actions/ingredient-window";
 import { URL_INGREDIENTS } from "../../utils/routes";
 
 import styles from "./burger-ingredients-item.module.css";
@@ -18,7 +16,6 @@ type TProps = {
 };
 
 const BurgerIngredientsItem: FC<TProps> = ({ item, count }) => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -26,12 +23,10 @@ const BurgerIngredientsItem: FC<TProps> = ({ item, count }) => {
     (e: SyntheticEvent) => {
       e.preventDefault();
       navigate(`${URL_INGREDIENTS}/${item._id}`, {
-        replace: true,
         state: { location: location, item: item },
       });
-      dispatch({ type: SET_DISPLAYED_INGREDIENT, item: item });
     },
-    [dispatch, navigate, location, item]
+    [navigate, location, item]
   );
 
   const [, dragRef] = useDrag({

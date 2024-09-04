@@ -1,68 +1,68 @@
 .section {
-  flex: 0 0 600px;
+    flex: 0 0 600px;
 }
 
 .scroll {
-  overflow-y: auto;
-  max-height: 464px;
-  scrollbar-width: thin;
-  scrollbar-color: #8585ad #2f2f37;
-  padding: 0;
-  list-style: none;
+    overflow-y: auto;
+    max-height: 464px;
+    scrollbar-width: thin;
+    scrollbar-color: #8585AD #2F2F37;
+    padding: 0;
+    list-style: none;
 }
 
 .scroll::-webkit-scrollbar {
-  background-color: #2f2f37;
-  width: 8px;
+    background-color: #2F2F37;
+    width: 8px;
 }
 
 .scroll::-webkit-scrollbar-thumb {
-  background-color: #8585ad;
+    background-color: #8585AD;
 }
 
 .scroll > :first-child {
-  margin-top: 0;
+    margin-top: 0;
 }
 
 @media (max-height: 950px) {
-  .scroll {
-    max-height: 370px;
-  }
+    .scroll {
+        max-height: 370px;
+    }
 }
 
 @media (max-height: 850px) {
-  .scroll {
-    max-height: 270px;
-  }
+    .scroll {
+        max-height: 270px;
+    }
 }
 
 @media (max-height: 750px) {
-  .scroll {
-    max-height: 175px;
-  }
+    .scroll {
+        max-height: 175px;
+    }
 }
 
 .burger {
-  padding: 0;
+    padding: 0;
 }
 
 @media (max-height: 650px) {
-  .burger {
-    margin-top: 30px;
-  }
+    .burger {
+        margin-top: 30px;
+    }
 }
 
 .empty-element {
-  display: flex;
-  align-items: center;
-  text-align: center;
-  background: var(--background);
+    display: flex;
+    align-items: center;
+    text-align: center;
+    background: var(--background);
 }
 
 .empty-element-text {
-  flex: 1;
+    flex: 1;
 }
 
 .ingredient {
-  background: var(--background);
+    background: var(--background);
 }

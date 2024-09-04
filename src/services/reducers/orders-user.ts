@@ -13,7 +13,7 @@ type TOrdersUserState = {
   error: string | null;
 };
 
-const initialState: TOrdersUserState = {
+export const initialState: TOrdersUserState = {
   connected: false,
   message: null,
   error: null,
@@ -27,7 +27,7 @@ export function ordersUserReducer(
     case ORDERS_USER_SUCCESS:
       return { ...state, error: null, connected: true };
     case ORDERS_USER_ERROR:
-      return { ...state, error: action.error, connected: false };
+      return { ...state, error: action.error };
     case ORDERS_USER_CLOSED:
       return { ...state, error: null, connected: false };
     case ORDERS_USER_MESSAGE:

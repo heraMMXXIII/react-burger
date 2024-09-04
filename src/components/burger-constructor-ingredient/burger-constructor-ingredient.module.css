@@ -1,9 +1,9 @@
 .list-item {
-  display: flex;
-  align-items: center;
-  cursor: move;
+    display: flex;
+    align-items: center;
+    cursor: move;
 }
 
 .ingredient {
-  background: var(--background);
+    background: var(--background);
 }

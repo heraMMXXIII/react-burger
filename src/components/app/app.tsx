@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch } from "../../hooks/redux";
 import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
-import { SET_DISPLAYED_INGREDIENT } from "../../services/actions/ingredient-window";
 import {
   URL_ROOT,
   URL_INGREDIENTS,
@@ -14,6 +13,7 @@ import {
   URL_PROFILE_LOGOUT,
   URL_ANY,
   URL_FEED,
+  URL_GITHUB,
 } from "../../utils/routes";
 
 import styles from "./app.module.css";
@@ -50,10 +50,6 @@ function App() {
   }, [dispatch]);
 
   const stateLocation = location.state && location.state.location;
-  const item = location.state && location.state.item;
-  useEffect(() => {
-    dispatch({ type: SET_DISPLAYED_INGREDIENT, item: item });
-  }, [dispatch, item]);
 
   const handleCloseModalDetail = () => {
     navigate(-1);
@@ -65,6 +61,7 @@ function App() {
       <div className={styles.main}>
         <Routes location={stateLocation || location}>
           <Route path={URL_ROOT} element={<MainPage />} />
+          <Route path={URL_GITHUB} element={<MainPage />} />
           <Route path={URL_FEED} element={<FeedPage />} />
           <Route path={`${URL_INGREDIENTS}/:id`} element={<IngredientPage />} />
           <Route path={`${URL_FEED}/:id`} element={<OrderPage />} />
@@ -95,6 +92,19 @@ function App() {
         </Routes>
         {stateLocation && (
           <Routes>
+            <Route
+              path="/ingredients/:id"
+              element={
+                <div>
+                  <Modal
+                    onClose={handleCloseModalDetail}
+                    caption="Детали ингредиента"
+                  >
+                    <IngredientPage />
+                  </Modal>
+                </div>
+              }
+            />
             <Route
               path={`${URL_FEED}/:id`}
               element={

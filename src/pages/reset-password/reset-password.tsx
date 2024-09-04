@@ -61,7 +61,7 @@ function ResetPassword() {
   ]);
 
   return (
-    <main className="mt-20 page-container">
+    <main className="page-container">
       <form className="page-container-inner" onSubmit={onSubmit}>
         <h1 className="text text_type_main-medium mb-6">
           Восстановление пароля
@@ -79,6 +79,8 @@ function ResetPassword() {
           value={state.token}
           onChange={onChange}
           extraClass="mb-6"
+          onPointerEnterCapture={() => {}}
+          onPointerLeaveCapture={() => {}}
         />
         {!!requestError && state.wasSubmit && (
           <p className={`mb-2 error-text text text_type_main-default`}>
@@ -90,7 +92,7 @@ function ResetPassword() {
         ) : (
           <Button
             type="primary"
-            extraClass="mb-20"
+            extraClass="button-bottom"
             htmlType="submit"
             disabled={state.password === "" || state.token === ""}
           >

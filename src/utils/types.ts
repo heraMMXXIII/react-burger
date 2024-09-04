@@ -4,7 +4,6 @@ import { TAuthActions } from "../services/actions/auth";
 import { TBurgerConstructorActions } from "../services/actions/burger-constructor";
 import { TCreateOrderActions } from "../services/actions/create-order";
 import { TGetOrderActions } from "../services/actions/get-order";
-import { TIngredientWindowActions } from "../services/actions/ingredient-window";
 import { TLoadIngredientsActions } from "../services/actions/load-ingredients";
 import {
   TOrdersAllActions,
@@ -95,7 +94,6 @@ export type TApplicationActions =
   | TAuthActions
   | TBurgerConstructorActions
   | TCreateOrderActions
-  | TIngredientWindowActions
   | TLoadIngredientsActions
   | TTabInfoActions
   | TOrdersAllActions

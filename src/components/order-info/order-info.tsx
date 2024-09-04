@@ -11,11 +11,7 @@ import {
   FormattedDate,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 
-type TProps = {
-  item?: TIngredient;
-};
-
-const OrderInfo: FC<TProps> = ({ item }) => {
+const OrderInfo: FC = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
 
@@ -26,12 +22,14 @@ const OrderInfo: FC<TProps> = ({ item }) => {
   const { order } = useSelector(getOrder);
   const { data: ingredients } = useSelector(getData);
 
-  const orderIngredients = useMemo(() => {
+  const orderData = useMemo(() => {
     if (order === null) {
       return null;
     }
+
+    let orderIngredients: Array<TIngredientQty> = [];
     let group: Record<string, TIngredientQty> = {};
-    for (let item of order!.ingredients) {
+    for (let item of order.ingredients) {
       let ingredient = ingredients.find(
         (elem: TIngredient) => elem._id === item
       );
@@ -42,91 +40,77 @@ const OrderInfo: FC<TProps> = ({ item }) => {
         group[item].qty += 1;
       }
     }
-    let res: Array<TIngredientQty> = [];
-    for (let item of order!.ingredients) {
+    for (let item of order.ingredients) {
       if (group[item]) {
-        res.push(group[item]);
+        orderIngredients.push(group[item]);
         delete group[item];
       }
     }
-    return res;
-  }, [ingredients, order]);
 
-  const orderAmount = useMemo(() => {
-    if (orderIngredients === null) {
-      return null;
-    }
-    return orderIngredients!.reduce(
-      (amount: number, elem: TIngredient | undefined) => elem!.price + amount,
+    const orderStatus =
+      order.status === "done"
+        ? "Выполнен"
+        : order.status === "created"
+        ? "Создан"
+        : "Готовится";
+
+    const totalSum = orderIngredients.reduce(
+      (amount: number, elem: TIngredient) => elem.price + amount,
       0
     );
-  }, [orderIngredients]);
 
-  const orderStatus = useMemo(() => {
-    if (order === null) {
-      return null;
-    }
-    return order!.status === "done"
-      ? "Выполнен"
-      : order!.status === "created"
-      ? "Создан"
-      : "Готовится";
-  }, [order]);
+    return { orderIngredients, orderStatus, totalSum };
+  }, [order, ingredients]);
 
   return (
     <main className={styles.main_container}>
-      {order && (
+      {order && orderData && (
         <>
-          <p
-            className={`text text_type_digits-default mb-10 ${styles.number_order}`}
-          >
-            #{order!.number}
+          <p className={`text text_type_digits-default mb-10 text-center`}>
+            #{String(order.number).padStart(6, "0")}
           </p>
-          <p className={`text text_type_main-medium mb-3`}>{order!.name}</p>
-          <p
-            className={`text text_type_main-default mb-10 ${styles.status_order}`}
-          >
-            {orderStatus}
+          <p className={`text text_type_main-medium mb-3`}>{order.name}</p>
+          <p className={`text text_type_main-default ${styles.status_order}`}>
+            {orderData.orderStatus}
           </p>
           <p className="text text_type_main-medium mb-2">{"Состав:"}</p>
-          <section className={styles.fill_order}>
-            {orderIngredients &&
-              orderIngredients.map((item, i: number) => {
-                return (
-                  <li key={i} className="mt-4 mr-6">
-                    <div className={styles.row_fill}>
-                      <div className={styles.image_name}>
-                        <div className={styles.image_fill}>
-                          <img src={item!.image_mobile} alt={item!.name} />
-                        </div>
-                        <p
-                          className={`text text_type_main-default ml-4 ${styles.pname}`}
-                        >
-                          {item.name}
-                        </p>
+          <section className={styles.container_order}>
+            {orderData.orderIngredients.map((item, i: number) => {
+              return (
+                <li key={i} className="mt-4 mr-6">
+                  <div className={styles.container_row}>
+                    <div className={styles.image_name}>
+                      <div className={styles.image_fill}>
+                        <img src={item.image_mobile} alt={item.name} />
                       </div>
-                      <div className={styles.count_price}>
-                        <span className="text text_type_digits-default mr-2">{`${item.qty} x ${item.price}`}</span>
-                        <CurrencyIcon type="primary" />
-                      </div>
+                      <p
+                        className={`text text_type_main-default ml-4 ${styles.name}`}
+                      >
+                        {item.name}
+                      </p>
                     </div>
-                  </li>
-                );
-              })}
+                    <div className={styles.count_price}>
+                      <span className="text text_type_digits-default mr-2">{`${item.qty} x ${item.price}`}</span>
+                      <CurrencyIcon type="primary" />
+                    </div>
+                  </div>
+                </li>
+              );
+            })}
           </section>
           <section
             className={`text text_type_main-default mt-10 mb-6 ${styles.food_order}`}
           >
             <p className="text text_type_main-default text_color_inactive">
               <FormattedDate
-                date={new Date(order!.createdAt)}
+                date={new Date(order.createdAt)}
                 className="text text_type_main-default text_color_inactive"
               />
             </p>
 
             <div className={styles.count_price}>
               <span className={`text text_type_digits-default mr-2`}>
-                {orderAmount}
+                {orderData.totalSum}
               </span>
               <CurrencyIcon type="primary" />
             </div>

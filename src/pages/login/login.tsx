@@ -55,7 +55,7 @@ function Login() {
   }, [dispatch, location.state, userLoggedIn, navigate]);
 
   return (
-    <main className="mt-20 page-container">
+    <main className="page-container">
       <form className="page-container-inner" onSubmit={onSubmit}>
         {requestStart ? (
           <Loader />
@@ -81,7 +81,7 @@ function Login() {
             )}
             <Button
               type="primary"
-              extraClass="mb-20"
+              extraClass="button-bottom"
               htmlType="submit"
               disabled={state.email === "" || state.password === ""}
             >

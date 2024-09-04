@@ -17,6 +17,7 @@ import OrderDetails from "../order-details/order-details";
 import Modal from "../modal/modal";
 import Loader from "../loader/loader";
 import { TIngredient } from "../../utils/types";
+import { CLEAR_CONSTRUCTOR } from "../../services/actions/burger-constructor";
 
 const BurgerConstructorOrder: FC = () => {
   const { bun, ingredients, sum } = useSelector(getIngredients);
@@ -52,6 +53,7 @@ const BurgerConstructorOrder: FC = () => {
 
   function hideOrder() {
     dispatch({ type: CLEAR_ORDER });
+    dispatch({ type: CLEAR_CONSTRUCTOR });
   }
 
   return (
@@ -63,31 +65,29 @@ const BurgerConstructorOrder: FC = () => {
           Ошибка при создании заказа
         </p>
       )}
-      <div className={`${styles.total} mr-4 mt-10`}>
-        {orderLoading ? (
-          <Loader />
-        ) : (
-          <>
-            <div className="text text_type_digits-medium mr-2 mb-1">{sum}</div>
-            <div className={`${styles["total-icon"]} mr-10`}>
-              <CurrencyIcon type="primary" />
-            </div>
-            <Button
-              htmlType="button"
-              type="primary"
-              disabled={disabled}
-              onClick={showOrder}
-            >
-              Оформить заказ
-            </Button>
-          </>
-        )}
-        {orderNumber && (
-          <Modal onClose={hideOrder}>
-            <OrderDetails number={orderNumber} />
-          </Modal>
-        )}
-      </div>
+      {orderLoading ? (
+        <Loader />
+      ) : (
+        <div className={`${styles.total} mr-4 mt-10`}>
+          <div className="text text_type_digits-medium mr-2 mb-1">{sum}</div>
+          <div className={`${styles["total-icon"]} mr-10`}>
+            <CurrencyIcon type="primary" />
+          </div>
+          <Button
+            htmlType="button"
+            type="primary"
+            disabled={disabled}
+            onClick={showOrder}
+          >
+            Оформить заказ
+          </Button>
+          {orderNumber && (
+            <Modal onClose={hideOrder}>
+              <OrderDetails number={orderNumber} />
+            </Modal>
+          )}
+        </div>
+      )}
     </>
   );
 };

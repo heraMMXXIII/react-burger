@@ -52,7 +52,7 @@ function ForgotPassword() {
   ]);
 
   return (
-    <main className="mt-20 page-container">
+    <main className="page-container">
       <form className="page-container-inner" onSubmit={onSubmit}>
         <h1 className="text text_type_main-medium mb-6">
           Восстановление пароля
@@ -74,7 +74,7 @@ function ForgotPassword() {
         ) : (
           <Button
             type="primary"
-            extraClass="mb-20"
+            extraClass="button-bottom"
             htmlType="submit"
             disabled={state.email === ""}
           >

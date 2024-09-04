@@ -13,7 +13,7 @@ type TOrdersAllState = {
   error: string | null;
 };
 
-const initialState: TOrdersAllState = {
+export const initialState: TOrdersAllState = {
   connected: false,
   message: null,
   error: null,
@@ -27,7 +27,7 @@ export function ordersAllReducer(
     case ORDERS_ALL_SUCCESS:
       return { ...state, error: null, connected: true };
     case ORDERS_ALL_ERROR:
-      return { ...state, error: action.error, connected: false };
+      return { ...state, error: action.error };
     case ORDERS_ALL_CLOSED:
       return { ...state, error: null, connected: false };
     case ORDERS_ALL_MESSAGE:

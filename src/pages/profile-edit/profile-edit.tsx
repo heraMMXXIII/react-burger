@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, ChangeEvent } from "react";
 import { useDispatch, useSelector } from "../../hooks/redux";
 import { useForm } from "../../hooks/useForm";
 import { getAuth } from "../../services/selectors";
@@ -12,6 +12,7 @@ import {
   EmailInput,
   PasswordInput,
   Button,
+  EditIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import Loader from "../../components/loader/loader";
 import { TPatchUser, TSubmit } from "../../utils/types";
@@ -42,12 +43,12 @@ function ProfileEdit() {
   );
 
   useEffect(() => {
-    //при открытии страницы еще раз запрашиваем данные пользователя (если параллельно в другой вкладке вышли или поменяли пользователя)
+    // При открытии страницы еще раз запрашиваем данные пользователя (если параллельно в другой вкладке вышли или поменяли пользователя)
     dispatch(authGetUserAction());
   }, [dispatch]);
 
   useEffect(() => {
-    //получили данные пользователя, заполняем форму
+    // Получили данные пользователя, заполняем форму
     if (requestSuccess) {
       setState({
         name: user ? user.name : "",
@@ -88,7 +89,7 @@ function ProfileEdit() {
 
   return (
     <form
-      className="mt-20 page-container-inner"
+      className="page-top page-container-inner"
       onSubmit={onSubmit}
       onReset={onReset}
     >
@@ -102,7 +103,10 @@ function ProfileEdit() {
         disabled={nameDisabled}
         onIconClick={nameClick}
         ref={nameRef}
+        onPointerEnterCapture={() => {}}
+        onPointerLeaveCapture={() => {}}
       />
+
       <EmailInput
         extraClass="mb-6"
         name="email"

@@ -8,9 +8,8 @@ type TProp = {
 };
 
 const OrdersStatus: FC<TProp> = ({ data }) => {
-  const countRowInColumn = 10;
-
   const location = useLocation();
+  const countRowInColumn = 6;
 
   const doneOrders = useMemo(
     () =>
@@ -19,6 +18,15 @@ const OrdersStatus: FC<TProp> = ({ data }) => {
         .map((elem: TOrder) => elem.number),
     [data.orders]
   );
+  const doneOrders1Column = useMemo(
+    () => doneOrders.slice(0, countRowInColumn),
+    [doneOrders]
+  );
+  const doneOrders2Column = useMemo(
+    () => doneOrders.slice(countRowInColumn, 2 * countRowInColumn),
+    [doneOrders]
+  );
+
   const pendingOrders = useMemo(
     () =>
       data.orders
@@ -26,21 +34,11 @@ const OrdersStatus: FC<TProp> = ({ data }) => {
         .map((elem: TOrder) => elem.number),
     [data.orders]
   );
-
-  const doneOrdersFirstColumn = useMemo(
-    () => doneOrders.slice(0, countRowInColumn),
-    [doneOrders]
-  );
-  const doneOrdersSecondColumn = useMemo(
-    () => doneOrders.slice(countRowInColumn, 2 * countRowInColumn),
-    [doneOrders]
-  );
-
-  const pendingOrdersFirstColumn = useMemo(
+  const pendingOrders1Column = useMemo(
     () => pendingOrders.slice(0, countRowInColumn),
     [pendingOrders]
   );
-  const pendingOrdersSecondColumn = useMemo(
+  const pendingOrders2Column = useMemo(
     () => pendingOrders.slice(countRowInColumn, 2 * countRowInColumn),
     [pendingOrders]
   );
@@ -50,11 +48,9 @@ const OrdersStatus: FC<TProp> = ({ data }) => {
       <div className={styles.list_orders}>
         <section>
           <p className="text text_type_main-medium">Готовы:</p>
-          <div
-            className={`${styles.list_number_orders} ${styles.ready_orders}`}
-          >
+          <div className={`${styles.container_orders} ${styles.ready_orders}`}>
             <ul className={styles.ul_orders}>
-              {doneOrdersFirstColumn.map((item, index) => (
+              {doneOrders1Column.map((item, index) => (
                 <li key={index} className="mt-2 mr-8">
                   <Link
                     to={`${item}`}
@@ -69,7 +65,7 @@ const OrdersStatus: FC<TProp> = ({ data }) => {
               ))}
             </ul>
             <ul className={styles.ul_orders}>
-              {doneOrdersSecondColumn.map((item, index) => (
+              {doneOrders2Column.map((item, index) => (
                 <li key={index} className="mt-2 mr-8">
                   <Link
                     to={`${item}`}
@@ -87,9 +83,9 @@ const OrdersStatus: FC<TProp> = ({ data }) => {
         </section>
         <section>
           <p className="text text_type_main-medium">В работе:</p>
-          <div className={styles.list_number_orders}>
+          <div className={styles.container_orders}>
             <ul className={styles.ul_orders}>
-              {pendingOrdersFirstColumn.map((item, index) => (
+              {pendingOrders1Column.map((item, index) => (
                 <li key={index} className="mt-2 mr-8">
                   <Link
                     to={`${item}`}
@@ -104,7 +100,7 @@ const OrdersStatus: FC<TProp> = ({ data }) => {
               ))}
             </ul>
             <ul className={styles.ul_orders}>
-              {pendingOrdersSecondColumn.map((item, index) => (
+              {pendingOrders2Column.map((item, index) => (
                 <li key={index} className="mt-2 mr-8">
                   <Link
                     to={`${item}`}

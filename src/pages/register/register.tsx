@@ -46,7 +46,7 @@ function Register() {
   }, [dispatch, userLoggedIn, navigate]);
 
   return (
-    <main className="mt-20 page-container">
+    <main className="page-container">
       <form className="page-container-inner" onSubmit={onSubmit}>
         {requestStart ? (
           <Loader />
@@ -59,7 +59,10 @@ function Register() {
               name="name"
               value={state.name}
               onChange={onChange}
+              onPointerEnterCapture={() => {}}
+              onPointerLeaveCapture={() => {}}
             />
+
             <EmailInput
               extraClass="mb-6"
               name="email"
@@ -79,7 +82,7 @@ function Register() {
             )}
             <Button
               type="primary"
-              extraClass="mb-20"
+              extraClass="button-bottom"
               htmlType="submit"
               disabled={
                 state.name === "" || state.email === "" || state.password === ""
