@@ -1,19 +1,11 @@
+.container {
+    display: flex;
+    justify-content: stretch;
+    flex-direction: column;
+}
+
 .main {
-  margin: 0 auto;
-  width: var(--width-outer);
-}
-
-.wait {
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.inner {
-  margin-right: 20px;
-  margin-left: 20px;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+    flex-grow: 1;
+    margin: 0 auto;
+    width: var(--width-outer);
 }
