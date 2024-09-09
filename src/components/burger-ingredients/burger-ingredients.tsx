@@ -19,6 +19,7 @@ const BurgerIngredients: FC = () => {
     if (bun) {
       res[bun._id] = 2;
     }
+
     for (let item of ingredients) {
       if (!(item._id in res)) {
         res[item._id] = 0;
