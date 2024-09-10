@@ -43,6 +43,6 @@ export function createOrderReducer(
       return initialState;
 
     default:
-      return state;
+      return initialState;
   }
 }
